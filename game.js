@@ -9,6 +9,8 @@ bee.src = './assets/sprite/bee.svg';
 
 const slurpSound = new Audio('./assets/sound/slurp.mp3');
 
+const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+
 let gameCanvas;
 let gameContext;
 
@@ -57,13 +59,11 @@ const getInitialBees = () => ({
 let bees = getInitialBees();
 
 const getInitialHoney = () => ({
-    positionX: BLOCK_SIZE * 20,
-    positionY: BLOCK_SIZE * 20
+    positionX: BLOCK_SIZE * getRandomInt(0, 20),
+    positionY: BLOCK_SIZE * getRandomInt(0, 20)
 });
 
 let honey = getInitialHoney();
-
-const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
 const clearCanvas = () => gameContext.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
