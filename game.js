@@ -50,8 +50,10 @@ const getInitialBees = () => ({
         y: BLOCK_SIZE * getRandomInt(0, 10),
     },
 
-    velocityX: VELOCITY,
-    velocityY: 0,
+    velocity: {
+        x: VELOCITY,
+        y: 0
+    },
 
     cellsWithBees: [],
 
@@ -138,6 +140,11 @@ const drawGameStateOnCanvas = () => {
     drawBees();
 };
 
+const moveBees = () => {
+    bees.position.x += bees.velocity.x;
+    bees.position.y += bees.velocity.y;
+};
+
 const gameLoop = () => {
     requestAnimationFrame(gameLoop);
 
@@ -145,8 +152,7 @@ const gameLoop = () => {
     if (shallNotRenderNewFrame()) return;
     ticks = 0;
 
-    bees.position.x += bees.velocityX;
-    bees.position.y += bees.velocityY;
+    moveBees();
 
     handleWrappingBeesAroundScreen();
 
@@ -157,24 +163,24 @@ const gameLoop = () => {
     drawGameStateOnCanvas();
 };
 
-const wasLeftArrowKeyPressedAndNotMovingHorizontally = e => e.key === 'ArrowLeft' && bees.velocityX === 0;
-const wasUpArrowKeyPressedAndNotMovingVertically = e => e.key === 'ArrowUp' && bees.velocityY === 0;
-const wasRightArrowKeyPressedAndNotMovingHorizontally = e => e.key === 'ArrowRight' && bees.velocityX === 0;
-const wasDownArrowKeyPressedAndNotMovingVertically = e => e.key === 'ArrowDown' && bees.velocityY === 0;
+const wasLeftArrowKeyPressedAndNotMovingHorizontally = e => e.key === 'ArrowLeft' && bees.velocity.x === 0;
+const wasUpArrowKeyPressedAndNotMovingVertically = e => e.key === 'ArrowUp' && bees.velocity.y === 0;
+const wasRightArrowKeyPressedAndNotMovingHorizontally = e => e.key === 'ArrowRight' && bees.velocity.x === 0;
+const wasDownArrowKeyPressedAndNotMovingVertically = e => e.key === 'ArrowDown' && bees.velocity.y === 0;
 
 const handleKeyboardEvents = e => {
     if (wasLeftArrowKeyPressedAndNotMovingHorizontally(e)) {
-        bees.velocityX = -VELOCITY;
-        bees.velocityY = 0;
+        bees.velocity.x = -VELOCITY;
+        bees.velocity.y = 0;
     } else if (wasUpArrowKeyPressedAndNotMovingVertically(e)) {
-        bees.velocityX = 0;
-        bees.velocityY = -VELOCITY;
+        bees.velocity.x = 0;
+        bees.velocity.y = -VELOCITY;
     } else if (wasRightArrowKeyPressedAndNotMovingHorizontally(e)) {
-        bees.velocityX = VELOCITY;
-        bees.velocityY = 0;
+        bees.velocity.x = VELOCITY;
+        bees.velocity.y = 0;
     } else if (wasDownArrowKeyPressedAndNotMovingVertically(e)) {
-        bees.velocityX = 0;
-        bees.velocityY = VELOCITY;
+        bees.velocity.x = 0;
+        bees.velocity.y = VELOCITY;
     }
 };
 
