@@ -45,8 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
 const BLOCK_SIZE = 64;
 const VELOCITY = BLOCK_SIZE;
 const getInitialBees = () => ({
-    positionX: BLOCK_SIZE * getRandomInt(0, 10),
-    positionY: BLOCK_SIZE * getRandomInt(0, 10),
+    position: {
+        x: BLOCK_SIZE * getRandomInt(0, 10),
+        y: BLOCK_SIZE * getRandomInt(0, 10),
+    },
 
     velocityX: VELOCITY,
     velocityY: 0,
@@ -59,26 +61,28 @@ const getInitialBees = () => ({
 let bees = getInitialBees();
 
 const getInitialHoney = () => ({
-    positionX: BLOCK_SIZE * getRandomInt(0, 20),
-    positionY: BLOCK_SIZE * getRandomInt(0, 20)
+    position: {
+        x: BLOCK_SIZE * getRandomInt(0, 20),
+        y: BLOCK_SIZE * getRandomInt(0, 20),
+    },
 });
 
 let honey = getInitialHoney();
 
 const clearCanvas = () => gameContext.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-const beesAreOutOfBoundsBottom = () => bees.positionX < 0;
-const beesAreOutOfBoundsTop = () => bees.positionX >= gameCanvas.width;
-const beesAreOutOfBoundsLeft = () => bees.positionY < 0;
-const beesAreOutOfBoundsRight = () => bees.positionY >= gameCanvas.height;
+const beesAreOutOfBoundsBottom = () => bees.position.x < 0;
+const beesAreOutOfBoundsTop = () => bees.position.x >= gameCanvas.width;
+const beesAreOutOfBoundsLeft = () => bees.position.y < 0;
+const beesAreOutOfBoundsRight = () => bees.position.y >= gameCanvas.height;
 
-const removeBeeFromLastCell = () => bees.cellsWithBees.unshift({x: bees.positionX, y: bees.positionY});
+const removeBeeFromLastCell = () => bees.cellsWithBees.unshift({x: bees.position.x, y: bees.position.y});
 
 const isBeesListBiggerThanBeeCells = () => bees.cellsWithBees.length > bees.beesLengthCells;
 
-const drawHoney = () => gameContext.drawImage(honeyPot, honey.positionX, honey.positionY, BLOCK_SIZE, BLOCK_SIZE);
+const drawHoney = () => gameContext.drawImage(honeyPot, honey.position.x, honey.position.y, BLOCK_SIZE, BLOCK_SIZE);
 
-const beeAteHoney = cell => cell.x === honey.positionX && cell.y === honey.positionY;
+const beeAteHoney = cell => cell.x === honey.position.x && cell.y === honey.position.y;
 
 const beesRanOverThemself = (cell, i) => cell.x === bees.cellsWithBees[i].x && cell.y === bees.cellsWithBees[i].y;
 
@@ -95,8 +99,8 @@ const beeCollisionDetection = (index, cell) => {
 };
 
 const placeNewHoney = () => {
-    honey.positionX = getRandomInt(0, 25) * BLOCK_SIZE;
-    honey.positionY = getRandomInt(0, 25) * BLOCK_SIZE;
+    honey.position.x = getRandomInt(0, 25) * BLOCK_SIZE;
+    honey.position.y = getRandomInt(0, 25) * BLOCK_SIZE;
 };
 
 const drawBee = (cell, index) => {
@@ -117,10 +121,10 @@ const drawBees = () => bees.cellsWithBees.forEach((cell, index) => drawBee(cell,
 const shallNotRenderNewFrame = () => ticks < TICKS_PER_FRAME;
 
 const handleWrappingBeesAroundScreen = () => {
-    if (beesAreOutOfBoundsBottom()) bees.positionX = gameCanvas.width - BLOCK_SIZE;
-    else if (beesAreOutOfBoundsTop()) bees.positionX = 0;
-    if (beesAreOutOfBoundsLeft()) bees.positionY = gameCanvas.height - BLOCK_SIZE;
-    else if (beesAreOutOfBoundsRight()) bees.positionY = 0;
+    if (beesAreOutOfBoundsBottom()) bees.position.x = gameCanvas.width - BLOCK_SIZE;
+    else if (beesAreOutOfBoundsTop()) bees.position.x = 0;
+    if (beesAreOutOfBoundsLeft()) bees.position.y = gameCanvas.height - BLOCK_SIZE;
+    else if (beesAreOutOfBoundsRight()) bees.position.y = 0;
 };
 
 const drawGameStateOnCanvas = () => {
@@ -141,8 +145,8 @@ const gameLoop = () => {
     if (shallNotRenderNewFrame()) return;
     ticks = 0;
 
-    bees.positionX += bees.velocityX;
-    bees.positionY += bees.velocityY;
+    bees.position.x += bees.velocityX;
+    bees.position.y += bees.velocityY;
 
     handleWrappingBeesAroundScreen();
 
