@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
 const BLOCK_SIZE = 64;
 const VELOCITY = BLOCK_SIZE;
 const getInitialBees = () => ({
-    positionX: BLOCK_SIZE * 10,
-    positionY: BLOCK_SIZE * 10,
+    positionX: BLOCK_SIZE * getRandomInt(0, 10),
+    positionY: BLOCK_SIZE * getRandomInt(0, 10),
 
     velocityX: VELOCITY,
     velocityY: 0,
