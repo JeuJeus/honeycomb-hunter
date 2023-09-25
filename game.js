@@ -1,11 +1,13 @@
 const gameBackground = new Image();
-gameBackground.src = './assets/grass.png';
+gameBackground.src = './assets/sprite/grass.png';
 
 const honeyPot = new Image();
-honeyPot.src = './assets/honey-pot.svg';
+honeyPot.src = './assets/sprite/honey-pot.svg';
 
 const bee = new Image();
-bee.src = './assets/bee.svg';
+bee.src = './assets/sprite/bee.svg';
+
+const slurpSound = new Audio('./assets/sound/slurp.mp3');
 
 let gameCanvas;
 let gameContext;
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ensureGameBackground();
 
-    requestAnimationFrame(loop);
+    requestAnimationFrame(gameLoop);
 });
 
 const BLOCK_SIZE = 64;
@@ -74,7 +76,7 @@ const removeBeeFromLastCell = () => bees.cellsWithBees.unshift({x: bees.position
 
 const isBeesListBiggerThanBeeCells = () => bees.cellsWithBees.length > bees.beesLengthCells;
 
-const drawHoney = () => gameContext.drawImage(honeyPot, honey.positionX, honey.positionY, BLOCK_SIZE - 1, BLOCK_SIZE - 1);
+const drawHoney = () => gameContext.drawImage(honeyPot, honey.positionX, honey.positionY, BLOCK_SIZE, BLOCK_SIZE);
 
 const beeAteHoney = cell => cell.x === honey.positionX && cell.y === honey.positionY;
 
@@ -99,9 +101,10 @@ const placeNewHoney = () => {
 
 const drawBee = (cell, index) => {
 
-    gameContext.drawImage(bee, cell.x, cell.y, BLOCK_SIZE - 1, BLOCK_SIZE - 1);
+    gameContext.drawImage(bee, cell.x, cell.y, BLOCK_SIZE, BLOCK_SIZE);
 
     if (beeAteHoney(cell)) {
+        slurpSound.play();
         bees.beesLengthCells++;
         placeNewHoney();
     }
@@ -120,14 +123,23 @@ const handleWrappingBeesAroundScreen = () => {
     else if (beesAreOutOfBoundsRight()) bees.positionY = 0;
 };
 
-const loop = () => {
-    requestAnimationFrame(loop);
+const drawGameStateOnCanvas = () => {
+    clearCanvas();
+
+    gameContext.canvas.width = window.innerWidth;
+    gameContext.canvas.height = window.innerHeight;
+
+    drawGameBackground();
+    drawHoney();
+    drawBees();
+};
+
+const gameLoop = () => {
+    requestAnimationFrame(gameLoop);
 
     ++ticks;
     if (shallNotRenderNewFrame()) return;
     ticks = 0;
-
-    clearCanvas();
 
     bees.positionX += bees.velocityX;
     bees.positionY += bees.velocityY;
@@ -138,9 +150,7 @@ const loop = () => {
 
     if (isBeesListBiggerThanBeeCells()) bees.cellsWithBees.pop();
 
-    drawGameBackground();
-    drawHoney();
-    drawBees();
+    drawGameStateOnCanvas();
 };
 
 const wasLeftArrowKeyPressedAndNotMovingHorizontally = e => e.key === 'ArrowLeft' && bees.velocityX === 0;
