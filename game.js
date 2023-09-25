@@ -168,21 +168,48 @@ const wasUpArrowKeyPressedAndNotMovingVertically = e => e.key === 'ArrowUp' && b
 const wasRightArrowKeyPressedAndNotMovingHorizontally = e => e.key === 'ArrowRight' && bees.velocity.x === 0;
 const wasDownArrowKeyPressedAndNotMovingVertically = e => e.key === 'ArrowDown' && bees.velocity.y === 0;
 
+const changeMovementDirectionToLeft = () => {
+    bees.velocity.x = -VELOCITY;
+    bees.velocity.y = 0;
+};
+
+const changeMovementDirectionToUp = () => {
+    bees.velocity.x = 0;
+    bees.velocity.y = -VELOCITY;
+};
+
+const changeMovementDirectionToRight = () => {
+    bees.velocity.x = VELOCITY;
+    bees.velocity.y = 0;
+};
+
+const changeMovementDirectionToDown = () => {
+    bees.velocity.x = 0;
+    bees.velocity.y = VELOCITY;
+};
+
 const handleKeyboardEvents = e => {
-    if (wasLeftArrowKeyPressedAndNotMovingHorizontally(e)) {
-        bees.velocity.x = -VELOCITY;
-        bees.velocity.y = 0;
-    } else if (wasUpArrowKeyPressedAndNotMovingVertically(e)) {
-        bees.velocity.x = 0;
-        bees.velocity.y = -VELOCITY;
-    } else if (wasRightArrowKeyPressedAndNotMovingHorizontally(e)) {
-        bees.velocity.x = VELOCITY;
-        bees.velocity.y = 0;
-    } else if (wasDownArrowKeyPressedAndNotMovingVertically(e)) {
-        bees.velocity.x = 0;
-        bees.velocity.y = VELOCITY;
-    }
+    if (wasLeftArrowKeyPressedAndNotMovingHorizontally(e)) changeMovementDirectionToLeft();
+    else if (wasUpArrowKeyPressedAndNotMovingVertically(e)) changeMovementDirectionToUp();
+    else if (wasRightArrowKeyPressedAndNotMovingHorizontally(e)) changeMovementDirectionToRight();
+    else if (wasDownArrowKeyPressedAndNotMovingVertically(e)) changeMovementDirectionToDown();
 };
 
 document.addEventListener('keydown', e => handleKeyboardEvents(e));
 
+const clickWasInLeftDirectionAndNotMovingHorizontally = e => e.x < bees.position.x && bees.velocity.x === 0;
+
+const clickWasInRightDirectionAndNotMovingHorizontally = e => e.x > bees.position.x && bees.velocity.x === 0;
+
+const clickWasInTopDirectionAndNotMovingVertically = e => e.y < bees.position.y && bees.velocity.y === 0;
+
+const clickWasInBottomDirectionAndNotMovingVertically = e => e.y > bees.position.y && bees.velocity.y === 0;
+
+const handleClickEvent = e => {
+    if (clickWasInLeftDirectionAndNotMovingHorizontally(e)) changeMovementDirectionToLeft();
+    else if (clickWasInTopDirectionAndNotMovingVertically(e)) changeMovementDirectionToUp();
+    else if (clickWasInRightDirectionAndNotMovingHorizontally(e)) changeMovementDirectionToRight();
+    else if (clickWasInBottomDirectionAndNotMovingVertically(e)) changeMovementDirectionToDown();
+};
+
+document.addEventListener('click', e => handleClickEvent(e))
